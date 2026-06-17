@@ -10,6 +10,7 @@ import CartContext from './component/cartcontext'
 import { useCallback } from 'react'
 import AboutUs from './component/AboutUs'
 import LogIn from './component/login'
+import Shopcart from './component/shopingCart'
 
 function App() {
 const [data,setData]=useState(null)
@@ -63,6 +64,7 @@ if(!data){
               <Route path="/single-product/:id" element={<SingelProduct cart={cart} setCart={setCart} />} />
               <Route path='/about' element={<AboutUs/>} />
               <Route path='/log-in' element={<LogIn/>}  />
+              <Route path='/shopping' element={<Shopcart/>}/>
             </Routes>
           </Layout>
         </CartContext.Provider>

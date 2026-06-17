@@ -38,19 +38,20 @@ export default function Header() {
 
               <div className="hidden md:flex items-center gap-4">
                 <Link to={'/log-in'}>
-                <button className="hover:text-blue-400 transition text-sm">
-                  ورود
-                </button>
+                  <button className="hover:text-blue-400 transition text-sm">
+                    ورود
+                  </button>
                 </Link>
-            
 
+                <Link to={'/shopping'}>
                   <button className="hover:text-blue-400 transition text-sm">
 
                     سبد خرید
 
                     <span className='text-blue-400'>{sumOfQuantities}</span>
                   </button>
-             
+                </Link>
+
                 <Link to={'/about'}>
                   <button className="hover:text-blue-400 transition text-sm">
                     درباره ما
