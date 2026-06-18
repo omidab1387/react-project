@@ -8,7 +8,7 @@ export default function SingelProduct() {
   const { id } = useParams();
   const [data, setData] = useState(null);
   const [currentItemQ, setCurrentIntemQ] = useState(0)
-    const [cart, setCart, addToCart] = useContext(CartContext)
+    const [cart, setCart, addToCart,DeletCart] = useContext(CartContext)
   useEffect(() => {
     fetch(`https://fakestoreapi.com/products/${id}`)
       .then((res) => res.json())
@@ -49,7 +49,7 @@ export default function SingelProduct() {
           <div className="flex gap-2 ">
             <button onClick={() => addToCart(id)} className=" border bg-gray-400 absolute bottom-5 left-[25%]  rounded text-white w-[20%]">+</button>
             <span className="absolute bottom-5 left-[52%] ">{currentItemQ}</span>
-            <button    className="border bg-gray-400 absolute bottom-5 right-[18%] rounded text-white w-[20%]">-</button>
+            <button  onClick={() => DeletCart(id)}  className="border bg-gray-400 absolute bottom-5 right-[18%] rounded text-white w-[20%]">-</button>
           </div>
         ) : (
           <button className="bg-blue-600 absolute bottom-5 left-[35%] rounded text-white w-[25%]" onClick={() => addToCart(id)}>add to cart</button>

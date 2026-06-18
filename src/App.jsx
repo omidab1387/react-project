@@ -43,6 +43,23 @@ const addToCart = useCallback((id) => {
     }
   }, [cart])
 
+const DeletCart = useCallback((id) => {
+
+    const foundIndex = cart.findIndex(item => item.id == id)
+
+    if (foundIndex === -1) {
+      setCart([...cart, {
+        id,
+        quantity: 1
+      }])
+    } else {
+      const copy = structuredClone(cart)
+
+      copy[foundIndex].quantity--;
+
+      setCart(copy)
+    }
+  }, [cart])
 
 if(!data){
   return( 
@@ -56,7 +73,7 @@ if(!data){
   return (
     <>
       <BrowserRouter>
-        <CartContext.Provider value={[cart, setCart, addToCart,]}>
+        <CartContext.Provider value={[cart, setCart, addToCart,DeletCart]}>
           <Layout >
             <Routes>
 
