@@ -14,7 +14,11 @@ export default function Cart({ id, quantity }) {
     }, [])
 
     if (!data) {
-        return <h1>LOADING...</h1>
+         return( 
+         <div className="flex justify-center items-center h-screen">
+        <div className="w-16 h-16 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+      </div>
+      )
     }
     return (
         <div className="flex gap-4 items-center px-4 py-2 rounded-md">
