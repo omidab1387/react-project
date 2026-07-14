@@ -1,35 +1,40 @@
-import { useContext } from "react"
-import { useEffect } from "react"
-import { useState } from "react"
-import CartContext from "./cartcontext"
+import useCartStore from "./cartStore";
 
-export default function Cart({ id, quantity }) {
-    const [data, setData] = useState(null)
-    const [cart, setCart, addToCart,DeletCart] = useContext(CartContext)
+export default function Cart({ product, quantity }) {
+    const addToCart = useCartStore((state) => state.addToCart);
+    const removeFromCart = useCartStore((state) => state.removeFromCart);
 
-    useEffect(() => {
-        fetch(`https://fakestoreapi.com/products/${id}`)
-            .then(response => response.json())
-            .then(json => setData(json));
-    }, [])
-
-    if (!data) {
-         return( 
-         <div className="flex justify-center items-center h-screen">
-        <div className="w-16 h-16 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
-      </div>
-      )
-    }
+    
     return (
-        <div className="flex gap-4 items-center px-4 py-2 rounded-md">
-            <img className="w-20" src={data.image} alt="" />
-            <h3>{data.title}</h3>
+        <div className="bg-white rounded-2xl shadow-md p-6 flex gap-6 items-center">
 
-            <div className="flex gap-2 items-center">
-                <button className="px-4 py-2 rounded-sm bg-gray-400" onClick={() => addToCart(id)}>+</button>
-                <span>{quantity}</span>
-                <button onClick={() => DeletCart(id)}   className="px-4 py-2 rounded-sm bg-gray-400">-</button>
+            <img
+                src={product.image}
+                className="w-32 h-32 object-contain bg-gray-100 rounded-xl p-3"
+            />
+
+            <div className="flex-1">
+
+                <h2 className="font-bold text-xl line-clamp-2">
+                    {product.title}
+                </h2>
+
+                <p className="text-green-600 text-2xl font-bold mt-4">
+                    ${product.price}
+                </p>
+
             </div>
+
+            <div className="flex items-center gap-4">
+
+                <button onClick={() => addToCart(product.id)}>+</button>
+
+                <span>{quantity}</span>
+
+                <button onClick={() => removeFromCart(product.id)}>-</button>
+
+            </div>
+
         </div>
     )
 }

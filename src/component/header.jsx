@@ -1,19 +1,17 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import CartContext from './cartcontext';
-import { useContext } from 'react';
 import { useMemo } from 'react';
+import useCartStore from './cartStore';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [cart] = useContext(CartContext)
+const cart = useCartStore((state) => state.cart);
   const sumOfQuantities = useMemo(() => {
     return cart.reduce((acc, current) => {
       return acc + current.quantity
     }, 0)
   }, [cart])
-
   return (
 
     <>

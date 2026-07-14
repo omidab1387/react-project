@@ -5,19 +5,24 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './product/home'
 import SingelProduct from './component/singlecard'
 import { useEffect, useState } from 'react'
-import { createContext } from 'react'
-import CartContext from './component/cartcontext'
-import { useCallback } from 'react'
 import AboutUs from './component/AboutUs'
 import LogIn from './component/login'
+import AdminPanel from "./component/admin-panel";
 import Shopcart from './component/shopingCart'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 function App() {
-const [data,setData]=useState(null)
-  const [cart, setCart] = useState([])
+  const [data, setData] = useState(null)
 
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: 3,
+      },
+    }
+  })
 
-   useEffect(() => {
+  useEffect(() => {
     fetch("https://fakestoreapi.com/products")
       .then((res) => res.json())
       .then((data) => setData(data));
@@ -25,67 +30,42 @@ const [data,setData]=useState(null)
 
 
 
-const addToCart = useCallback((id) => {
 
-    const foundIndex = cart.findIndex(item => item.id == id)
 
-    if (foundIndex === -1) {
-      setCart([...cart, {
-        id,
-        quantity: 1
-      }])
-    } else {
-      const copy = structuredClone(cart)
 
-      copy[foundIndex].quantity++;
 
-      setCart(copy)
-    }
-  }, [cart])
-
-const DeletCart = useCallback((id) => {
-
-    const foundIndex = cart.findIndex(item => item.id == id)
-
-    if (foundIndex === -1) {
-      setCart([...cart, {
-        id,
-        quantity: 1
-      }])
-    } else {
-      const copy = structuredClone(cart)
-
-      copy[foundIndex].quantity--;
-
-      setCart(copy)
-    }
-  }, [cart])
-
-if(!data){
-  return( 
-         <div className="flex justify-center items-center h-screen">
+  if (!data) {
+    return (
+      <div className="flex justify-center items-center h-screen">
         <div className="w-16 h-16 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
       </div>
-      )
-  
-}
+    )
+
+  }
 
   return (
     <>
       <BrowserRouter>
-        <CartContext.Provider value={[cart, setCart, addToCart,DeletCart]}>
-          <Layout >
+        <QueryClientProvider client={queryClient}>
+          <Layout>
             <Routes>
 
               <Route path="/" element={<Home />} />
-              <Route path="/single-product/:id" element={<SingelProduct cart={cart} setCart={setCart} />} />
-              <Route path='/about' element={<AboutUs/>} />
-              <Route path='/log-in' element={<LogIn/>}  />
-              <Route path='/shopping' element={<Shopcart/>}/>
+
+              <Route
+                path="/single-product/:id"
+                element={<SingelProduct />}
+              />
+
+              <Route path="/about" element={<AboutUs />} />
+
+              <Route path="/log-in" element={<LogIn />} />
+              <Route path="/admin-panel" element={<AdminPanel />} />
+              <Route path="/shopping" element={<Shopcart />} />
+
             </Routes>
           </Layout>
-        </CartContext.Provider>
-
+        </QueryClientProvider>
       </BrowserRouter>
     </>
   )
