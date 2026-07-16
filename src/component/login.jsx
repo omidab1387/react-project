@@ -1,8 +1,10 @@
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
+
 import useAuthStore from "./authStore";
+import { loginUser } from "./services";
 
 export default function LogIn() {
   const login = useAuthStore((state) => state.login);
@@ -17,22 +19,7 @@ export default function LogIn() {
   } = useForm();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (data) => {
-      const res = await fetch("https://fakestoreapi.com/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!res.ok) {
-        const message = await res.text();
-        throw new Error(message || "نام کاربری یا رمز عبور اشتباه است");
-      }
-
-      return await res.json();
-    },
+    mutationFn: loginUser,
 
     onSuccess: (data) => {
       setLoginError("");
@@ -40,26 +27,28 @@ export default function LogIn() {
       navigate("/admin-panel");
     },
 
-    onError: () => {
-      setLoginError("نام کاربری یا رمز عبور اشتباه است");
+    onError: (error) => {
+      setLoginError(
+        error.message || "نام کاربری یا رمز عبور اشتباه است"
+      );
     },
   });
 
-  const handleLogin = (data) => {
+  const handleLogin = (formData) => {
     setLoginError("");
-    mutate(data);
+    mutate(formData);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="bg-white p-8 rounded-lg shadow-sm w-full max-w-sm">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-semibold text-center mb-6">
           ورود
         </h2>
 
         <form onSubmit={handleSubmit(handleLogin)}>
           <div className="mb-4">
-            <label>نام کاربری</label>
+            <label className="block mb-1">نام کاربری</label>
 
             <input
               type="text"
@@ -77,7 +66,7 @@ export default function LogIn() {
           </div>
 
           <div className="mb-4">
-            <label>رمز عبور</label>
+            <label className="block mb-1">رمز عبور</label>
 
             <input
               type="password"
@@ -92,18 +81,18 @@ export default function LogIn() {
                 {errors.password.message}
               </p>
             )}
-
-            {loginError && (
-              <p className="text-red-500 text-sm mt-2">
-                {loginError}
-              </p>
-            )}
           </div>
+
+          {loginError && (
+            <p className="text-red-500 text-sm mb-4 text-center">
+              {loginError}
+            </p>
+          )}
 
           <button
             type="submit"
             disabled={isPending}
-            className="w-full bg-blue-600 text-white py-2 rounded"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:bg-gray-400"
           >
             {isPending ? "در حال ورود..." : "ورود"}
           </button>
